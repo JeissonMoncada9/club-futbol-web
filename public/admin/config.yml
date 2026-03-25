@@ -1,0 +1,56 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "partidos"
+    label: "Partidos"
+    folder: "src/content/partidos"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Equipo Rival", name: "rival", widget: "string"}
+      - {label: "Fecha y Hora", name: "fecha", widget: "datetime"}
+      - {label: "Local o Visitante", name: "local", widget: "boolean", default: true}
+      - {label: "Resultado", name: "resultado", widget: "string", required: false}
+      - {label: "Imagen", name: "imagen", widget: "image", required: false}
+      - {label: "Descripción", name: "body", widget: "markdown"}
+
+  - name: "noticias"
+    label: "Noticias"
+    folder: "src/content/noticias"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Título", name: "titulo", widget: "string"}
+      - {label: "Fecha", name: "fecha", widget: "datetime"}
+      - {label: "Imagen Destacada", name: "imagen", widget: "image", required: false}
+      - {label: "Contenido", name: "body", widget: "markdown"}
+
+  - name: "jugadores"
+    label: "Jugadores"
+    folder: "src/content/jugadores"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Nombre Completo", name: "nombre", widget: "string"}
+      - {label: "Número", name: "numero", widget: "number", valueType: "int"}
+      - {label: "Posición", name: "posicion", widget: "select", options: ["Arquero", "Defensa", "Mediocampista", "Delantero"]}
+      - {label: "Edad", name: "edad", widget: "number"}
+      - {label: "Nacionalidad", name: "nacionalidad", widget: "string"}
+      - {label: "Foto", name: "foto", widget: "image"}
+      - {label: "Biografía", name: "body", widget: "markdown"}
+
+  - name: "cuerpo-tecnico"
+    label: "Cuerpo Técnico"
+    folder: "src/content/cuerpo-tecnico"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Nombre", name: "nombre", widget: "string"}
+      - {label: "Rol", name: "rol", widget: "select", options: ["Director Técnico", "Asistente Técnico", "Preparador Físico", "Médico", "Utilero"]}
+      - {label: "Foto", name: "foto", widget: "image"}
+      - {label: "Descripción", name: "body", widget: "markdown"}

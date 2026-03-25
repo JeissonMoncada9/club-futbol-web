@@ -1,1 +1,1 @@
-echo "prueba"
+prueba

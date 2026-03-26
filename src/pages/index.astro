@@ -1,17 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
+import { getNoticias } from '../lib/noticias.js'; // Helper que lee noticias de Netlify CMS
 
-// Obtener todos los partidos ordenados por fecha
+// -------------------
+// Partidos (Astro Content)
+// -------------------
 const todosPartidos = await getCollection('partidos');
 const partidos = todosPartidos
   .sort((a, b) => new Date(a.data.fecha) - new Date(b.data.fecha))
   .slice(0, 3);
 
-// Obtener las últimas 3 noticias
-const todasNoticias = await getCollection('noticias');
-const noticias = todasNoticias
-  .sort((a, b) => new Date(b.data.fecha) - new Date(a.data.fecha))
-  .slice(0, 3);
+// -------------------
+// Noticias (Netlify CMS)
+// -------------------
+const noticiasCMS = getNoticias().sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 3);
 ---
 
 <!DOCTYPE html>
@@ -22,11 +24,12 @@ const noticias = todasNoticias
   <title>Club Deportivo | Inicio</title>
 </head>
 <body>
+  <!-- HEADER -->
   <header style="background: #1a3e6f; color: white; padding: 1rem;">
     <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
       <div>
         <h1 style="margin: 0;">Club Deportivo</h1>
-        <p style="margin: 0; font-size: 0.9rem;">Fundado en 1995</p>
+        <p style="margin: 0; font-size: 0.9rem;">Fundado en 2026</p>
       </div>
       <nav>
         <a href="/" style="color: white; margin: 0 1rem; text-decoration: none;">Inicio</a>
@@ -38,11 +41,13 @@ const noticias = todasNoticias
     </div>
   </header>
 
+  <!-- BIENVENIDA -->
   <section style="background: #f0f0f0; padding: 4rem 2rem; text-align: center;">
     <h2>Bienvenidos al Club Deportivo</h2>
     <p style="font-size: 1.2rem;">Pasión, tradición y compromiso con nuestra comunidad</p>
   </section>
 
+  <!-- PRÓXIMOS PARTIDOS -->
   <section style="max-width: 1200px; margin: 3rem auto; padding: 0 1rem;">
     <h2 style="text-align: center;">Próximos Partidos</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
@@ -63,16 +68,17 @@ const noticias = todasNoticias
     </div>
   </section>
 
+  <!-- ÚLTIMAS NOTICIAS -->
   <section style="background: #f9f9f9; padding: 3rem 1rem;">
     <div style="max-width: 1200px; margin: 0 auto;">
       <h2 style="text-align: center;">Últimas Noticias</h2>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
-        {noticias.length > 0 ? (
-          noticias.map((noticia) => (
+        {noticiasCMS.length > 0 ? (
+          noticiasCMS.map((noticia) => (
             <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
-              <h3>{noticia.data.titulo}</h3>
-              <p style="color: #666; font-size: 0.9rem;">{new Date(noticia.data.fecha).toLocaleDateString('es-ES')}</p>
-              <p>{noticia.body?.slice(0, 100)}...</p>
+              <h3>{noticia.titulo}</h3>
+              <p style="color: #666; font-size: 0.9rem;">{new Date(noticia.fecha).toLocaleDateString('es-ES')}</p>
+              <div innerHTML={noticia.body}></div>
             </div>
           ))
         ) : (
@@ -84,6 +90,7 @@ const noticias = todasNoticias
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer style="background: #1a3e6f; color: white; text-align: center; padding: 2rem;">
     <p>Club Deportivo - Todos los derechos reservados</p>
     <p>📧 contacto@clubdeportivo.com | 📞 123-456-7890</p>

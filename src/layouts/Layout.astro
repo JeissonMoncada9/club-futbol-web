@@ -1,23 +1,10 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<script>
+  // Si hay token de Netlify Identity en la URL
+  if (window.location.hash.includes("invite_token") ||
+      window.location.hash.includes("confirmation_token") ||
+      window.location.hash.includes("recovery_token")) {
+    
+    // Redirige al admin manteniendo el token
+    window.location.href = "/admin/" + window.location.hash;
+  }
+</script>

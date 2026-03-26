@@ -1,11 +1,92 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Obtener todos los partidos ordenados por fecha
+const todosPartidos = await getCollection('partidos');
+const partidos = todosPartidos
+  .sort((a, b) => new Date(a.data.fecha) - new Date(b.data.fecha))
+  .slice(0, 3);
+
+// Obtener las últimas 3 noticias
+const todasNoticias = await getCollection('noticias');
+const noticias = todasNoticias
+  .sort((a, b) => new Date(b.data.fecha) - new Date(a.data.fecha))
+  .slice(0, 3);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Club Deportivo | Inicio</title>
+</head>
+<body>
+  <header style="background: #1a3e6f; color: white; padding: 1rem;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1 style="margin: 0;">Club Deportivo</h1>
+        <p style="margin: 0; font-size: 0.9rem;">Fundado en 1995</p>
+      </div>
+      <nav>
+        <a href="/" style="color: white; margin: 0 1rem; text-decoration: none;">Inicio</a>
+        <a href="/partidos" style="color: white; margin: 0 1rem; text-decoration: none;">Partidos</a>
+        <a href="/jugadores" style="color: white; margin: 0 1rem; text-decoration: none;">Jugadores</a>
+        <a href="/cuerpo-tecnico" style="color: white; margin: 0 1rem; text-decoration: none;">Cuerpo Técnico</a>
+        <a href="/sede" style="color: white; margin: 0 1rem; text-decoration: none;">Sede</a>
+      </nav>
+    </div>
+  </header>
+
+  <section style="background: #f0f0f0; padding: 4rem 2rem; text-align: center;">
+    <h2>Bienvenidos al Club Deportivo</h2>
+    <p style="font-size: 1.2rem;">Pasión, tradición y compromiso con nuestra comunidad</p>
+  </section>
+
+  <section style="max-width: 1200px; margin: 3rem auto; padding: 0 1rem;">
+    <h2 style="text-align: center;">Próximos Partidos</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+      {partidos.length > 0 ? (
+        partidos.map((partido) => (
+          <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
+            <h3>vs {partido.data.rival}</h3>
+            <p>Fecha: {new Date(partido.data.fecha).toLocaleDateString('es-ES')}</p>
+            <p>{partido.data.local ? '🏠 Local' : '✈️ Visitante'}</p>
+            {partido.data.resultado && <p>Resultado: {partido.data.resultado}</p>}
+          </div>
+        ))
+      ) : (
+        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; text-align: center;">
+          <p>Próximamente se publicarán los partidos</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section style="background: #f9f9f9; padding: 3rem 1rem;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h2 style="text-align: center;">Últimas Noticias</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+        {noticias.length > 0 ? (
+          noticias.map((noticia) => (
+            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
+              <h3>{noticia.data.titulo}</h3>
+              <p style="color: #666; font-size: 0.9rem;">{new Date(noticia.data.fecha).toLocaleDateString('es-ES')}</p>
+              <p>{noticia.body?.slice(0, 100)}...</p>
+            </div>
+          ))
+        ) : (
+          <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; text-align: center;">
+            <p>Próximamente se publicarán noticias</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <footer style="background: #1a3e6f; color: white; text-align: center; padding: 2rem;">
+    <p>Club Deportivo - Todos los derechos reservados</p>
+    <p>📧 contacto@clubdeportivo.com | 📞 123-456-7890</p>
+  </footer>
+</body>
+</html>
